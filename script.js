@@ -106,7 +106,7 @@ const runCountdown = (eventDate) => {
 
     updateCountdown({
       days: timeLeftDate.getDate() - 1,
-      hours: timeLeftDate.getHours(),
+      hours: timeLeftDate.getHours() + timeLeftDate.getTimezoneOffset()/60,
       minutes: timeLeftDate.getMinutes(),
       seconds: timeLeftDate.getSeconds(),
     });
