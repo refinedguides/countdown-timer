@@ -11,8 +11,6 @@ let interval,
 //* event listeners
 
 const setupEventListeners = () => {
-  document.addEventListener("DOMContentLoaded", initCountdown);
-
   document.querySelector(".form").addEventListener("submit", handleSubmit);
 
   document.querySelector("#reset").addEventListener("click", handleReset);
@@ -35,8 +33,8 @@ const handleReset = () => {
   localStorage.removeItem("countdownData");
 
   // reset form
+  setDefaultEventDate();
   eventNameInput.value = "";
-  eventDateInput.value = "";
   enableSoundCheckbox.checked = false;
 };
 
@@ -102,13 +100,18 @@ const runCountdown = (eventDate) => {
 
     handleSound(timeLeft);
   } else {
-    const timeLeftDate = new Date(timeLeft);
+    const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+    const hours = Math.floor(
+      (timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+    );
+    const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
 
     updateCountdown({
-      days: timeLeftDate.getDate() - 1,
-      hours: timeLeftDate.getHours(),
-      minutes: timeLeftDate.getMinutes(),
-      seconds: timeLeftDate.getSeconds(),
+      days,
+      hours,
+      minutes,
+      seconds,
     });
   }
 };
@@ -142,6 +145,14 @@ const getTimeLeft = (eventDate) => {
   return eventDate - new Date().getTime();
 };
 
+const setDefaultEventDate = () => {
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  eventDateInput.value = tomorrow.toISOString().split("T")[0];
+};
+
 //* initialize
 
+setDefaultEventDate();
 setupEventListeners();
+initCountdown();
